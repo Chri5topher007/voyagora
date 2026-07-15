@@ -11,7 +11,7 @@ export default function CheckoutSuccess() {
 
   useEffect(() => {
     const verify = async () => {
-      await fetch('import.meta.env.VITE_API_URL/bookings/verify?session_id=' + sessionId);
+      await fetch('http://localhost:3000/bookings/verify?session_id=' + sessionId);
       setLoading(false);
     };
     verify();

@@ -13,14 +13,14 @@ export default function Pricing() {
     if (!token) return navigate('/login');
 
     try {
-      const res = await fetch('import.meta.env.VITE_API_URL/auth/create-subscription-checkout', {
+      const res = await fetch('http://localhost:3000/auth/create-subscription-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
         body: JSON.stringify({ tier })
       });
       const data = await res.json();
       if (data.url) {
-        window.location.href = data.url; // Redirect to real Stripe Checkout
+        window.location.href = data.url;
       } else {
         alert(data.message || 'Failed to initiate subscription payment');
         setLoadingTier(null);
@@ -32,15 +32,15 @@ export default function Pricing() {
   };
 
   const plans = [
-    { id: 'STARTER', name: 'Starter', price: '₹999', features: ['Up to 5 Active Listings', 'Basic Analytics', 'Standard Support'] },
-    { id: 'PROFESSIONAL', name: 'Professional', price: '₹2,999', features: ['Unlimited Listings', 'Advanced Heat Maps', 'Featured Listings (2/mo)', 'Priority Support'], popular: true },
-    { id: 'ENTERPRISE', name: 'Enterprise', price: '₹9,999', features: ['Everything in Pro', 'API Access', 'Dedicated Account Manager', 'Custom Integrations'] }
+    { id: 'STARTER', name: 'Starter', price: '₹500', features: ['Up to 5 Active Listings', 'Basic Analytics', 'Standard Support'] },
+    { id: 'PROFESSIONAL', name: 'Professional', price: '₹1,000', features: ['Up to 20 Active Listings', 'Advanced Heat Maps', 'Featured Listings (2/mo)', 'Priority Support'], popular: true },
+    { id: 'ENTERPRISE', name: 'Enterprise', price: '₹1,999', features: ['Up to 35 Active Listings', 'API Access', 'Dedicated Account Manager', 'Custom Integrations'] }
   ];
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-extrabold text-slate-900 mb-2">Choose Your Plan</h1>
+        <h1 className="text-4xl font-serif font-extrabold text-slate-900 mb-2">Choose Your Plan</h1>
         <p className="text-slate-500">Unlock your organizer dashboard and start selling today. Secure payment via Stripe.</p>
       </div>
 
@@ -52,7 +52,7 @@ export default function Pricing() {
             className={"bg-white p-8 rounded-2xl shadow-sm border flex flex-col " + (plan.popular ? 'border-indigo-600 ring-2 ring-indigo-600' : 'border-slate-200')}
           >
             {plan.popular && <span className="bg-indigo-600 text-white text-xs px-3 py-1 rounded-full font-semibold self-start mb-4">MOST POPULAR</span>}
-            <h3 className="text-xl font-bold text-slate-900 mb-2">{plan.name}</h3>
+            <h3 className="text-xl font-serif font-bold text-slate-900 mb-2">{plan.name}</h3>
             <p className="text-4xl font-extrabold mb-6">{plan.price}<span className="text-base font-normal text-slate-500">/mo</span></p>
             <ul className="space-y-3 mb-8 text-sm flex-grow">
               {plan.features.map(f => <li key={f} className="text-slate-600 flex items-center gap-2"><span className="text-green-500">✓</span> {f}</li>)}

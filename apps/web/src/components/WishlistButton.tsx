@@ -9,7 +9,7 @@ export default function WishlistButton({ itemId, itemType }: { itemId: string, i
   useEffect(() => {
     if (!token) return;
     const checkStatus = async () => {
-      const res = await fetch('import.meta.env.VITE_API_URL/wishlist/mine', { headers: { 'Authorization': 'Bearer ' + token } });
+      const res = await fetch('http://localhost:3000/wishlist/mine', { headers: { 'Authorization': 'Bearer ' + token } });
       const data = await res.json();
       const isSaved = data.some((w: any) => w[itemType]?.id === itemId);
       setSaved(isSaved);
@@ -21,7 +21,7 @@ export default function WishlistButton({ itemId, itemType }: { itemId: string, i
     e.stopPropagation(); // Prevent card click
     if (!token) return alert('Please login to save items');
     
-    const res = await fetch('import.meta.env.VITE_API_URL/wishlist/toggle', {
+    const res = await fetch('http://localhost:3000/wishlist/toggle', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ itemId, itemType })

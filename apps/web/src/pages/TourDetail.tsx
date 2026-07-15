@@ -22,7 +22,7 @@ export default function TourDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('import.meta.env.VITE_API_URL/tours/' + id)
+    fetch('http://localhost:3000/tours/' + id)
       .then(res => res.json())
       .then(data => { setTour(data); setLoading(false); })
       .catch(() => { alert('Tour not found'); navigate('/'); });

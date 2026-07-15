@@ -11,7 +11,7 @@ export default function ReviewModal({ itemId, itemType, itemName, onClose }: { i
     e.preventDefault();
     setLoading(true);
     const token = localStorage.getItem('token');
-    await fetch('import.meta.env.VITE_API_URL/reviews', {
+    await fetch('http://localhost:3000/reviews', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ rating, comment, [itemType + 'Id']: itemId })

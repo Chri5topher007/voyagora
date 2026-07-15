@@ -11,14 +11,15 @@ export class BookingService {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_123', { apiVersion: '2024-06-20' as any });
   }
 
-  async createCheckoutSession(userId: string, itemId: string, itemType: string, travelDate?: string, couponCode?: string) {
+  async createCheckoutSession(userId: string, itemId: string, itemType: string, travelDate?: string, couponCode?: string, paymentChoice?: string) {
     const item = await (this.prisma as any)[itemType].findUnique({ where: { id: itemId } });
     if (!item) throw new NotFoundException('Item not found');
 
     const basePrice = item.price;
     const gstAmount = (basePrice * (item.gstPercentage || 0)) / 100;
-    let amountToPayOnline = basePrice + gstAmount;
-    if (item.paymentType === 'ADVANCE') {
+    
+    let amountToPayOnline = basePrice + gstAmount; // Default to FULL
+    if (item.paymentType === 'ADVANCE' && paymentChoice === 'ADVANCE') {
       amountToPayOnline = (item.advanceAmount || 0) + gstAmount;
     }
     
@@ -30,9 +31,11 @@ export class BookingService {
       amountToPayOnline = Math.max(0, amountToPayOnline - discountApplied);
     }
 
-    const pendingAmount = (basePrice + gstAmount) - amountToPayOnline - (item.paymentType === 'ADVANCE' ? (item.advanceAmount || 0) : 0);
+    const pendingAmount = (basePrice + gstAmount) - amountToPayOnline;
     const platformFee = amountToPayOnline * 0.05;
     const organizerPayout = amountToPayOnline - platformFee;
+
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080';
 
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -40,7 +43,7 @@ export class BookingService {
       line_items: [{
         price_data: {
           currency: 'inr',
-          product_data: { name: item.title + (item.paymentType === 'ADVANCE' ? ' (Advance Booking)' : ''), description: item.description.substring(0, 100) },
+          product_data: { name: item.title + (paymentChoice === 'ADVANCE' ? ' (Advance Booking)' : ''), description: item.description.substring(0, 100) },
           unit_amount: Math.round(amountToPayOnline * 100),
         },
         quantity: 1,
@@ -55,8 +58,8 @@ export class BookingService {
         gstAmount: gstAmount.toString(),
         discountApplied: discountApplied.toString()
       },
-      success_url: 'process.env.FRONTEND_URL/checkout/success?session_id={CHECKOUT_SESSION_ID}',
-      cancel_url: 'process.env.FRONTEND_URL/checkout/cancel',
+      success_url: frontendUrl + '/checkout/success?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: frontendUrl + '/checkout/cancel',
     });
 
     return { url: session.url };
@@ -92,7 +95,6 @@ export class BookingService {
       },
     });
 
-    // Send Notifications
     await this.notificationService.sendNotification(meta.userId, '🎉 Your booking for ' + item.title + ' is confirmed!');
     await this.notificationService.sendNotification(item.organizerId, '💰 New booking received for ' + item.title + '!');
 

@@ -10,7 +10,7 @@ export default function MyBookings() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
-    fetch('import.meta.env.VITE_API_URL/bookings/mine', { headers: { 'Authorization': `Bearer ${token}` } })
+    fetch('http://localhost:3000/bookings/mine', { headers: { 'Authorization': `Bearer ${token}` } })
       .then(res => res.json()).then(data => setBookings(data));
   }, [navigate]);
 

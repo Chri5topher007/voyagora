@@ -13,24 +13,27 @@ export default function Checkout() {
   const [travelDate, setTravelDate] = useState('');
   const [promoCode, setPromoCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState(0);
+  
+  // Payment Choice State: Default to FULL, or ADVANCE if the organizer only allows advance
+  const [paymentChoice, setPaymentChoice] = useState(item?.paymentType === 'ADVANCE' ? 'ADVANCE' : 'FULL');
 
   if (!item) { navigate('/'); return null; }
 
-  const isAdvance = item.paymentType === 'ADVANCE';
+  const allowsAdvance = item.paymentType === 'ADVANCE';
   const basePrice = item.price;
   const gst = (basePrice * (item.gstPercentage || 0)) / 100;
-  let amountPayableNow = isAdvance ? (item.advanceAmount + gst) : (basePrice + gst);
+  
+  // Calculate amount based on user's choice
+  let amountPayableNow = paymentChoice === 'ADVANCE' ? (item.advanceAmount + gst) : (basePrice + gst);
   
   if (appliedDiscount > 0) {
     amountPayableNow = Math.max(0, amountPayableNow - appliedDiscount);
   }
   
-  const pendingAmount = isAdvance ? (basePrice + gst) - (item.advanceAmount + gst) : 0;
+  const pendingAmount = paymentChoice === 'ADVANCE' ? (basePrice + gst) - amountPayableNow - (item.advanceAmount || 0) : 0;
 
   const handleApplyPromo = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple frontend validation for the default coupon.
-    // In a real app, you'd fetch /coupons/validate, but we pass it to the backend on checkout.
     if (promoCode.toUpperCase() === 'VOYAGORA100') {
       setAppliedDiscount(100);
       alert('Promo code applied! ₹100 off');
@@ -46,14 +49,15 @@ export default function Checkout() {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
 
-    const res = await fetch('import.meta.env.VITE_API_URL/bookings/checkout', {
+    const res = await fetch('http://localhost:3000/bookings/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ 
         itemId: item.id, 
         itemType: tour ? 'tour' : 'event', 
         travelDate,
-        couponCode: appliedDiscount > 0 ? promoCode.toUpperCase() : undefined
+        couponCode: appliedDiscount > 0 ? promoCode.toUpperCase() : undefined,
+        paymentChoice // Send the user's choice to the backend
       })
     });
     const data = await res.json();
@@ -85,15 +89,23 @@ export default function Checkout() {
             </div>
           )}
 
-          {/* PROMO CODE SECTION */}
+          {/* PAYMENT CHOICE UI */}
+          {allowsAdvance && (
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-slate-700 mb-2">Payment Option</label>
+              <div className="flex gap-4">
+                <button type="button" onClick={() => setPaymentChoice('FULL')} className={"flex-1 py-3 rounded-xl font-semibold text-sm border-2 transition " + (paymentChoice === 'FULL' ? 'bg-indigo-50 border-indigo-600 text-indigo-700' : 'bg-white border-slate-200 text-slate-600')}>
+                  Pay Full<br/><span className="text-xs font-normal">₹{basePrice + gst}</span>
+                </button>
+                <button type="button" onClick={() => setPaymentChoice('ADVANCE')} className={"flex-1 py-3 rounded-xl font-semibold text-sm border-2 transition " + (paymentChoice === 'ADVANCE' ? 'bg-indigo-50 border-indigo-600 text-indigo-700' : 'bg-white border-slate-200 text-slate-600')}>
+                  Pay Advance<br/><span className="text-xs font-normal">₹{item.advanceAmount + gst}</span>
+                </button>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleApplyPromo} className="flex gap-2 mb-6">
-            <input 
-              type="text" 
-              placeholder="Promo Code (try VOYAGORA100)" 
-              value={promoCode} 
-              onChange={(e) => setPromoCode(e.target.value)} 
-              className="flex-grow p-3 bg-slate-100 rounded-xl outline-none text-slate-800 text-sm uppercase"
-            />
+            <input type="text" placeholder="Promo Code (VOYAGORA100)" value={promoCode} onChange={(e) => setPromoCode(e.target.value)} className="flex-grow p-3 bg-slate-100 rounded-xl outline-none text-slate-800 text-sm uppercase" />
             <button type="submit" className="bg-slate-200 text-slate-800 px-4 rounded-xl text-sm font-semibold hover:bg-slate-300">Apply</button>
           </form>
 
@@ -102,11 +114,11 @@ export default function Checkout() {
             {item.gstPercentage > 0 && <div className="flex justify-between text-slate-500"><span>GST ({item.gstPercentage}%)</span><span>₹{gst}</span></div>}
             {appliedDiscount > 0 && <div className="flex justify-between text-green-600"><span>Discount</span><span>- ₹{appliedDiscount}</span></div>}
             <div className="flex justify-between text-slate-900 font-bold text-lg pt-2 border-t border-slate-200 mt-2">
-              <span>{isAdvance ? 'Advance Payable Now' : 'Total Payable Now'}</span><span>₹{amountPayableNow}</span>
+              <span>Payable Now</span><span>₹{amountPayableNow}</span>
             </div>
-            {isAdvance && (
+            {paymentChoice === 'ADVANCE' && (
               <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-xl text-yellow-800 text-sm">
-                ⚠️ <b>Pending Amount: ₹{pendingAmount}</b><br/>This remaining amount must be paid directly to the organizer upon arrival.
+                ⚠️ <b>Pending Amount: ₹{basePrice + gst - amountPayableNow}</b><br/>This remaining amount must be paid directly to the organizer upon arrival.
               </div>
             )}
           </div>

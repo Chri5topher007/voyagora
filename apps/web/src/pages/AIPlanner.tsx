@@ -16,7 +16,7 @@ export default function AIPlanner() {
     if (!token) return navigate('/login');
 
     try {
-      const res = await fetch('import.meta.env.VITE_API_URL/ai/itinerary', {
+      const res = await fetch('http://localhost:3000/ai/itinerary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ prompt })

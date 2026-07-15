@@ -11,7 +11,7 @@ export default function Scanner() {
 
   const verifyTicket = async (code: string) => {
     const token = localStorage.getItem('token');
-    const res = await fetch('import.meta.env.VITE_API_URL/bookings/verify', {
+    const res = await fetch('http://localhost:3000/bookings/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
       body: JSON.stringify({ qrCode: code })

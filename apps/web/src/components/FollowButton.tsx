@@ -11,7 +11,7 @@ export default function FollowButton({ organizerId }: { organizerId: string }) {
 
   const handleClick = async () => {
     if (!token) return alert('Please login to follow organizers');
-    const res = await fetch('import.meta.env.VITE_API_URL/follow/' + organizerId, {
+    const res = await fetch('http://localhost:3000/follow/' + organizerId, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token }
     });

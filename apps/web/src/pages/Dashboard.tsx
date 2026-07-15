@@ -21,9 +21,9 @@ export default function Dashboard() {
   const fetchData = async () => {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
-    const tRes = await fetch('import.meta.env.VITE_API_URL/tours'); setTours(await tRes.json());
-    const eRes = await fetch('import.meta.env.VITE_API_URL/events'); setEvents(await eRes.json());
-    const sRes = await fetch('import.meta.env.VITE_API_URL/tours/stats', { headers: { 'Authorization': 'Bearer ' + token } });
+    const tRes = await fetch('http://localhost:3000/tours'); setTours(await tRes.json());
+    const eRes = await fetch('http://localhost:3000/events'); setEvents(await eRes.json());
+    const sRes = await fetch('http://localhost:3000/tours/stats', { headers: { 'Authorization': 'Bearer ' + token } });
     setStats(await sRes.json());
   };
   useEffect(() => { fetchData(); }, []);
@@ -32,7 +32,7 @@ export default function Dashboard() {
     e.preventDefault();
     const token = localStorage.getItem('token');
     const endpoint = type === 'TOUR' ? 'tours' : 'events';
-    await fetch('import.meta.env.VITE_API_URL/' + endpoint, {
+    await fetch('http://localhost:3000/' + endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify(formData)

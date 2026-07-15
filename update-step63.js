@@ -1,4 +1,14 @@
+const fs = require('fs');
 
+function createFile(filePath, content) {
+  const dir = require('path').dirname(filePath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(filePath, content, 'utf8');
+  console.log('✅ Updated ' + filePath);
+}
+
+// OVERWRITE APP.TSX WITH INDUSTRIAL PREMIUM TRAVEL TEMPLATE UI
+createFile('apps/web/src/App.tsx', `
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -19,7 +29,6 @@ import TourDetail from './pages/TourDetail';
 import SubscriptionSuccess from './pages/SubscriptionSuccess';
 import Explore from './pages/Explore';
 import GemDetail from './pages/GemDetail';
-import EventDetail from './pages/EventDetail';
 import MapModal from './components/MapModal';
 import WishlistButton from './components/WishlistButton';
 import NotificationBell from './components/NotificationBell';
@@ -57,7 +66,7 @@ function Home() {
   const handleBookNow = (item: any, type: 'tour' | 'event') => {
     if (!isLoggedIn) return navigate('/login');
     if (type === 'tour') navigate('/tours/' + item.id);
-    else navigate('/events/' + item.id);
+    else navigate('/checkout', { state: { event: item } });
   };
 
   const handleDashboardClick = () => {
@@ -69,6 +78,7 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-white selection:bg-indigo-100 font-sans">
+      {/* PREMIUM FLOATING NAVBAR */}
       <nav className="absolute top-0 left-0 right-0 z-50 w-full bg-transparent py-4 px-4 md:px-12 flex justify-between items-center">
         <h1 className="text-2xl font-serif font-bold tracking-tight text-white flex items-center gap-2 drop-shadow-lg">
           <span className="bg-indigo-600 text-white w-9 h-9 rounded-lg flex items-center justify-center text-lg font-sans">V</span>
@@ -93,11 +103,12 @@ function Home() {
           <button onClick={() => { navigate(isLoggedIn ? '/hidden-gems' : '/login'); setMenuOpen(false); }} className="text-left text-slate-700 font-medium py-2">Hidden Gems</button>
           {isLoggedIn && <div className="py-2 flex items-center gap-2"><NotificationBell /> <span className="text-slate-700 font-medium">Notifications</span></div>}
           {isLoggedIn && <button onClick={() => { navigate('/my-bookings'); setMenuOpen(false); }} className="text-left text-slate-700 font-medium py-2">My Trips</button>}
-          {role === 'ADMIN' && <button onClick={() => { navigate('/admin'); setMenuOpen(false); }} className="text-left text-red-600 font-medium py-2">Admin</button>}
+          {role === 'ADMIN' && <button onClick={() => { navigate('/admin'); setMenuOpen(false); }} className="text-left text-red-600 font-medium py-2">Admin</button>
           <button onClick={() => { handleDashboardClick(); setMenuOpen(false); }} className="bg-slate-900 text-white px-5 py-3 rounded-full text-sm font-semibold text-center">{isLoggedIn ? 'Dashboard' : 'Get Started'}</button>
         </div>
       )}
 
+      {/* IMMERSIVE HERO SECTION */}
       <header className="relative h-[100vh] flex items-center justify-center overflow-hidden bg-slate-900">
         <div className="absolute inset-0 bg-cover bg-center scale-105" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1473625247510-8ceb1760943f?auto=format&fit=crop&w=1920&q=80')" }} />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-slate-900/20 z-10" />
@@ -122,6 +133,7 @@ function Home() {
         </div>
       </header>
 
+      {/* STATS COUNTER STRIP (Industrial Standard) */}
       <section className="bg-slate-900 text-white py-12 px-4 md:px-12 border-b border-slate-800">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center font-sans">
           <div><h3 className="text-4xl font-serif font-bold text-indigo-400">500+</h3><p className="text-slate-400 text-sm mt-1 uppercase tracking-wider">Destinations</p></div>
@@ -131,6 +143,7 @@ function Home() {
         </div>
       </section>
 
+      {/* CATEGORY CARDS SECTION */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-16 font-sans">
         <div className="text-center mb-12">
           <span className="text-indigo-600 font-bold text-sm uppercase tracking-widest">Top Categories</span>
@@ -161,6 +174,7 @@ function Home() {
         </div>
       </section>
 
+      {/* FEATURED TOURS */}
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-12 font-sans">
         <div className="flex justify-between items-end mb-12">
           <div>
@@ -186,8 +200,9 @@ function Home() {
                   <div className="flex flex-col gap-3 border-t border-slate-100 pt-4 mt-auto">
                     <div className="flex justify-between items-center">
                       <span className="text-slate-400 text-sm">⭐ {tour.avgRating || '0.0'} ({tour.reviewCount} reviews)</span>
-                      <button onClick={() => handleBookNow(tour, 'tour')} className="bg-slate-900 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-indigo-600 transition text-sm">View Details</button>
+                      <button onClick={() => handleBookNow(tour, 'tour')} className="bg-slate-900 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-indigo-600 transition text-sm">Book Now</button>
                     </div>
+                    <button onClick={() => setActiveMap(tour)} className="text-slate-500 text-sm hover:text-indigo-600 font-medium flex items-center justify-center gap-1 pt-2 border-t border-dashed">📍 View on Map</button>
                   </div>
                 </div>
               </motion.div>
@@ -195,6 +210,7 @@ function Home() {
           )}
         </div>
 
+        {/* WHY CHOOSE US SECTION */}
         <section className="bg-slate-50 py-16 px-8 rounded-3xl mb-24">
           <div className="text-center mb-12">
             <span className="text-indigo-600 font-bold text-sm uppercase tracking-widest">Why Voyagora</span>
@@ -207,6 +223,7 @@ function Home() {
           </div>
         </section>
 
+        {/* UPCOMING EVENTS */}
         <div className="flex justify-between items-end mb-12">
           <div>
             <span className="text-purple-600 font-bold text-sm uppercase tracking-widest">Don't miss out</span>
@@ -228,14 +245,16 @@ function Home() {
                 <div className="flex flex-col gap-3 border-t border-slate-100 pt-4 mt-auto">
                   <div className="flex justify-between items-center">
                     <span className="text-slate-400 text-sm">Limited seats</span>
-                    <button onClick={() => handleBookNow(event, 'event')} className="bg-slate-900 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-purple-600 transition text-sm">View Details</button>
+                    <button onClick={() => handleBookNow(event, 'event')} className="bg-slate-900 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-purple-600 transition text-sm">Book Now</button>
                   </div>
+                  <button onClick={() => setActiveMap(event)} className="text-slate-500 text-sm hover:text-purple-600 font-medium flex items-center justify-center gap-1 pt-2 border-t border-dashed">📍 View on Map</button>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
 
+        {/* HIDDEN GEMS */}
         <div className="flex justify-between items-end mb-12">
           <div>
             <span className="text-yellow-600 font-bold text-sm uppercase tracking-widest">Community Driven</span>
@@ -255,6 +274,7 @@ function Home() {
         </div>
       </main>
 
+      {/* PREMIUM FOOTER */}
       <footer className="bg-slate-900 text-slate-400 py-16 font-sans">
         <div className="max-w-7xl mx-auto px-4 md:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           <div className="col-span-2 md:col-span-1">
@@ -297,7 +317,6 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/explore/:type" element={<Explore />} />
         <Route path="/gems/:id" element={<GemDetail />} />
-        <Route path="/events/:id" element={<EventDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/auth/activate-subscription" element={<SubscriptionSuccess />} />
@@ -317,3 +336,6 @@ export default function App() {
     </Router>
   );
 }
+`);
+
+console.log('\n✨ Step 63 (Industrial Travel Template UI) successfully generated!');

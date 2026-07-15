@@ -40,13 +40,15 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new BadRequestException('User not found');
 
+    // Updated Prices: 500, 1000, 1999 (Amounts in paise)
     const priceMap: any = {
-      STARTER: { amount: 99900, name: 'Starter Plan' }, 
-      PROFESSIONAL: { amount: 299900, name: 'Professional Plan' }, 
-      ENTERPRISE: { amount: 999900, name: 'Enterprise Plan' }
+      STARTER: { amount: 50000, name: 'Starter Plan' }, 
+      PROFESSIONAL: { amount: 100000, name: 'Professional Plan' }, 
+      ENTERPRISE: { amount: 199900, name: 'Enterprise Plan' }
     };
 
     const selectedPlan = priceMap[tier] || priceMap.STARTER;
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080';
 
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -60,8 +62,8 @@ export class AuthService {
         quantity: 1,
       }],
       metadata: { userId, tier },
-      success_url: process.env.FRONTEND_URL + '/auth/activate-subscription?session_id={CHECKOUT_SESSION_ID}',
-      cancel_url: process.env.FRONTEND_URL + '/pricing',
+      success_url: frontendUrl + '/auth/activate-subscription?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: frontendUrl + '/pricing',
     });
 
     return { url: session.url };
@@ -74,7 +76,6 @@ export class AuthService {
     const userId = session.metadata?.userId;
     if (!userId) throw new BadRequestException('Invalid session');
 
-    // Use update() which returns the updated user directly, bypassing null checks
     const user = await this.prisma.user.update({
       where: { id: userId },
       data: { subscriptionStatus: 'ACTIVE' },

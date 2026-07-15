@@ -1,4 +1,48 @@
+const fs = require('fs');
+const path = require('path');
 
+function walk(dir) {
+  let results = [];
+  const list = fs.readdirSync(dir);
+  list.forEach(file => {
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
+    if (stat && stat.isDirectory()) {
+      if (!['node_modules', '.git', 'dist', 'uploads'].includes(file)) {
+        results = results.concat(walk(filePath));
+      }
+    } else {
+      if (file.endsWith('.tsx') || file.endsWith('.ts')) {
+        results.push(filePath);
+      }
+    }
+  });
+  return results;
+}
+
+// STEP 1: REPAIR ALL BROKEN API URLS IN ALL FILES
+const files = walk('apps/web/src');
+let fixedCount = 0;
+
+files.forEach(file => {
+  let content = fs.readFileSync(file, 'utf8');
+  let originalContent = content;
+  
+  // Fix any broken regex artifacts
+  content = content.split("(import.meta.env.VITE_API_URL || 'http://localhost:3000')").join("http://localhost:3000");
+  content = content.split("import.meta.env.VITE_API_URL").join("http://localhost:3000");
+  
+  if (content !== originalContent) {
+    fs.writeFileSync(file, content, 'utf8');
+    console.log('🔧 Repaired API URL in: ' + file);
+    fixedCount++;
+  }
+});
+
+console.log(`✅ Repaired ${fixedCount} files.`);
+
+// STEP 2: REWRITE TRAVELER DASHBOARD (With Floating Round SOS Button)
+fs.writeFileSync('apps/web/src/pages/TravelerDashboard.tsx', `
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -144,3 +188,7 @@ export default function TravelerDashboard() {
     </div>
   );
 }
+`);
+console.log('✅ Traveler Dashboard restored with Round SOS button.');
+
+console.log('\n✨ Deep Fix Complete! All URLs repaired and SOS button updated.');
