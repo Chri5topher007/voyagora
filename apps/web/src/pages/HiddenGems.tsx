@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import MapPicker from '../components/MapPicker';
 import ImageUpload from '../components/ImageUpload';
+import { API_URL } from '../config';
 
 export default function HiddenGems() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export default function HiddenGems() {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', description: '', imageUrl: '', lat: 0, lng: 0 });
 
-  const fetchPlaces = () => fetch('http://localhost:3000/community').then(res => res.json()).then(data => setPlaces(data));
+  const fetchPlaces = () => fetch('API_URL/community').then(res => res.json()).then(data => setPlaces(data));
 
   useEffect(() => {
     if (!localStorage.getItem('token')) navigate('/login');
@@ -21,7 +22,7 @@ export default function HiddenGems() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    await fetch('http://localhost:3000/community', {
+    await fetch('API_URL/community', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify(formData)

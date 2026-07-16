@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ReviewModal from '../components/ReviewModal';
 import SOSModal from '../components/SOSModal';
+import { API_URL } from '../config';
 
 export default function TravelerDashboard() {
   const navigate = useNavigate();
@@ -19,10 +20,10 @@ export default function TravelerDashboard() {
     const role = localStorage.getItem('role');
     if (!token || role !== 'TRAVELER') return navigate('/');
     
-    const bRes = await fetch('http://localhost:3000/bookings/mine', { headers: { 'Authorization': 'Bearer ' + token } });
+    const bRes = await fetch('API_URL/bookings/mine', { headers: { 'Authorization': 'Bearer ' + token } });
     setBookings(await bRes.json());
     
-    const wRes = await fetch('http://localhost:3000/wishlist/mine', { headers: { 'Authorization': 'Bearer ' + token } });
+    const wRes = await fetch('API_URL/wishlist/mine', { headers: { 'Authorization': 'Bearer ' + token } });
     setWishlist(await wRes.json());
     setLoading(false);
   };

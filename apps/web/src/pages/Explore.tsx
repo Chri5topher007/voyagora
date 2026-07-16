@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { API_URL } from '../config';
 
 export default function Explore() {
   const params = useParams();
@@ -17,7 +18,7 @@ export default function Explore() {
 
   useEffect(() => {
     setLoading(true);
-    let url = 'http://localhost:3000/' + (type === 'gems' ? 'community' : type);
+    let url = 'API_URL/' + (type === 'gems' ? 'community' : type);
     if (type === 'tours' && (searchQuery || maxPrice)) {
       url += '?';
       if (searchQuery) url += 'search=' + encodeURIComponent(searchQuery) + '&';

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import MapPicker from '../components/MapPicker';
 import ImageUpload from '../components/ImageUpload';
+import { API_URL } from '../config';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -21,9 +22,9 @@ export default function Dashboard() {
   const fetchData = async () => {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
-    const tRes = await fetch('http://localhost:3000/tours'); setTours(await tRes.json());
-    const eRes = await fetch('http://localhost:3000/events'); setEvents(await eRes.json());
-    const sRes = await fetch('http://localhost:3000/tours/stats', { headers: { 'Authorization': 'Bearer ' + token } });
+    const tRes = await fetch('API_URL/tours'); setTours(await tRes.json());
+    const eRes = await fetch('API_URL/events'); setEvents(await eRes.json());
+    const sRes = await fetch('API_URL/tours/stats', { headers: { 'Authorization': 'Bearer ' + token } });
     setStats(await sRes.json());
   };
   useEffect(() => { fetchData(); }, []);
@@ -32,7 +33,7 @@ export default function Dashboard() {
     e.preventDefault();
     const token = localStorage.getItem('token');
     const endpoint = type === 'TOUR' ? 'tours' : 'events';
-    await fetch('http://localhost:3000/' + endpoint, {
+    await fetch('API_URL/' + endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify(formData)

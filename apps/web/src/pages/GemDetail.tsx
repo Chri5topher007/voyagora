@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { API_URL } from '../config';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -20,7 +21,7 @@ export default function GemDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/community/' + id)
+    fetch('API_URL/community/' + id)
       .then(res => res.json())
       .then(data => { setGem(data); setLoading(false); })
       .catch(() => { alert('Gem not found'); navigate('/'); });

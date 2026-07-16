@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { API_URL } from '../config';
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ export default function Checkout() {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
 
-    const res = await fetch('http://localhost:3000/bookings/checkout', {
+    const res = await fetch('API_URL/bookings/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ 

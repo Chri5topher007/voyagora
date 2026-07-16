@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { API_URL } from '../config';
 
 export default function MyBookings() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ export default function MyBookings() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
-    fetch('http://localhost:3000/bookings/mine', { headers: { 'Authorization': `Bearer ${token}` } })
+    fetch('API_URL/bookings/mine', { headers: { 'Authorization': `Bearer ${token}` } })
       .then(res => res.json()).then(data => setBookings(data));
   }, [navigate]);
 

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { API_URL } from '../config';
 
 export default function CheckoutSuccess() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export default function CheckoutSuccess() {
 
   useEffect(() => {
     const verify = async () => {
-      await fetch('http://localhost:3000/bookings/verify?session_id=' + sessionId);
+      await fetch('API_URL/bookings/verify?session_id=' + sessionId);
       setLoading(false);
     };
     verify();

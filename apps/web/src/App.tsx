@@ -20,9 +20,11 @@ import SubscriptionSuccess from './pages/SubscriptionSuccess';
 import Explore from './pages/Explore';
 import GemDetail from './pages/GemDetail';
 import EventDetail from './pages/EventDetail';
+import NotFound from './pages/NotFound';
 import MapModal from './components/MapModal';
 import WishlistButton from './components/WishlistButton';
 import NotificationBell from './components/NotificationBell';
+import { API_URL } from './config';
 
 function Home() {
   const [allTours, setAllTours] = useState<any[]>([]);
@@ -40,9 +42,9 @@ function Home() {
   const role = localStorage.getItem('role');
 
   useEffect(() => {
-    fetch('http://localhost:3000/tours').then(res => res.json()).then(data => { setAllTours(data); setFilteredTours(data); });
-    fetch('http://localhost:3000/events').then(res => res.json()).then(data => setEvents(data));
-    fetch('http://localhost:3000/community').then(res => res.json()).then(data => setGems(data));
+    fetch('API_URL/tours').then(res => res.json()).then(data => { setAllTours(data); setFilteredTours(data); });
+    fetch('API_URL/events').then(res => res.json()).then(data => setEvents(data));
+    fetch('API_URL/community').then(res => res.json()).then(data => setGems(data));
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -264,13 +266,18 @@ function Home() {
           <div>
             <h4 className="text-white font-bold mb-4 text-sm uppercase tracking-wider">Platform</h4>
             <ul className="space-y-2 text-sm">
-              <li className="hover:text-white cursor-pointer">Tours</li><li className="hover:text-white cursor-pointer">Events</li><li className="hover:text-white cursor-pointer">Hidden Gems</li><li className="hover:text-white cursor-pointer">AI Planner</li>
+              <li onClick={() => navigate('/explore/tours')} className="hover:text-white cursor-pointer">Tours</li>
+              <li onClick={() => navigate('/explore/events')} className="hover:text-white cursor-pointer">Events</li>
+              <li onClick={() => navigate('/explore/gems')} className="hover:text-white cursor-pointer">Hidden Gems</li>
+              <li onClick={() => navigate('/ai-planner')} className="hover:text-white cursor-pointer">AI Planner</li>
             </ul>
           </div>
           <div>
             <h4 className="text-white font-bold mb-4 text-sm uppercase tracking-wider">Company</h4>
             <ul className="space-y-2 text-sm">
-              <li className="hover:text-white cursor-pointer">About Us</li><li className="hover:text-white cursor-pointer">Careers</li><li className="hover:text-white cursor-pointer">Contact</li>
+              <li onClick={() => alert('About Us page coming soon!')} className="hover:text-white cursor-pointer">About Us</li>
+              <li onClick={() => alert('Careers page coming soon!')} className="hover:text-white cursor-pointer">Careers</li>
+              <li onClick={() => alert('Contact page coming soon!')} className="hover:text-white cursor-pointer">Contact</li>
             </ul>
           </div>
           <div>
@@ -278,7 +285,7 @@ function Home() {
             <p className="text-sm mb-4">Get the best travel deals weekly.</p>
             <div className="flex gap-2">
               <input type="email" placeholder="Email address" className="bg-slate-800 px-4 py-2 rounded-lg text-sm text-white outline-none flex-grow" />
-              <button className="bg-indigo-600 text-white px-4 rounded-lg font-bold hover:bg-indigo-500">→</button>
+              <button onClick={() => alert('Subscribed! (Mock)')} className="bg-indigo-600 text-white px-4 rounded-lg font-bold hover:bg-indigo-500">→</button>
             </div>
           </div>
         </div>
@@ -313,6 +320,7 @@ export default function App() {
         <Route path="/scanner" element={<Scanner />} />
         <Route path="/hidden-gems" element={<HiddenGems />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

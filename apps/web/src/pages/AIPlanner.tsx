@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { API_URL } from '../config';
 
 export default function AIPlanner() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function AIPlanner() {
     if (!token) return navigate('/login');
 
     try {
-      const res = await fetch('http://localhost:3000/ai/itinerary', {
+      const res = await fetch('API_URL/ai/itinerary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ prompt })

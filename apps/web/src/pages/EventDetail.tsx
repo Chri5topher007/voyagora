@@ -7,6 +7,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import WishlistButton from '../components/WishlistButton';
 import FollowButton from '../components/FollowButton';
+import { API_URL } from '../config';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -22,7 +23,7 @@ export default function EventDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/events/' + id)
+    fetch('API_URL/events/' + id)
       .then(res => res.json())
       .then(data => { setEvent(data); setLoading(false); })
       .catch(() => { alert('Event not found'); navigate('/'); });

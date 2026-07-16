@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { API_URL } from '../config';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function Login() {
     const payload = isLogin ? { email: formData.email, password: formData.password } : { ...formData, role };
 
     try {
-      const res = await fetch('http://localhost:3000/auth/' + endpoint, {
+      const res = await fetch('API_URL/auth/' + endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

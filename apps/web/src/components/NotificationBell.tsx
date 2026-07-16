@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '../config';
 
 export default function NotificationBell() {
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -11,7 +12,7 @@ export default function NotificationBell() {
   const fetchNotifs = async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
-    const res = await fetch('http://localhost:3000/notifications', { headers: { 'Authorization': 'Bearer ' + token } });
+    const res = await fetch('API_URL/notifications', { headers: { 'Authorization': 'Bearer ' + token } });
     if (res.ok) {
       const data = await res.json();
       setNotifications(data);
@@ -29,7 +30,7 @@ export default function NotificationBell() {
     setOpen(!open);
     if (!open && unreadCount > 0) {
       const token = localStorage.getItem('token');
-      await fetch('http://localhost:3000/notifications/read', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
+      await fetch('API_URL/notifications/read', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
       setUnreadCount(0);
       setTimeout(fetchNotifs, 500);
     }

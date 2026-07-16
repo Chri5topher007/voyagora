@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { API_URL } from '../config';
 
 export default function Pricing() {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export default function Pricing() {
     if (!token) return navigate('/login');
 
     try {
-      const res = await fetch('http://localhost:3000/auth/create-subscription-checkout', {
+      const res = await fetch('API_URL/auth/create-subscription-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
         body: JSON.stringify({ tier })

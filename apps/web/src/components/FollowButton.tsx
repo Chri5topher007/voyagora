@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_URL } from '../config';
 
 export default function FollowButton({ organizerId }: { organizerId: string }) {
   const [following, setFollowing] = useState(false);
@@ -11,7 +12,7 @@ export default function FollowButton({ organizerId }: { organizerId: string }) {
 
   const handleClick = async () => {
     if (!token) return alert('Please login to follow organizers');
-    const res = await fetch('http://localhost:3000/follow/' + organizerId, {
+    const res = await fetch('API_URL/follow/' + organizerId, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token }
     });

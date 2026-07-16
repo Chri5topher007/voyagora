@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Html5Qrcode } from 'html5-qrcode';
+import { API_URL } from '../config';
 
 export default function Scanner() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export default function Scanner() {
 
   const verifyTicket = async (code: string) => {
     const token = localStorage.getItem('token');
-    const res = await fetch('http://localhost:3000/bookings/verify', {
+    const res = await fetch('API_URL/bookings/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
       body: JSON.stringify({ qrCode: code })

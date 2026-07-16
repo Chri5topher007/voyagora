@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { API_URL } from '../config';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export default function AdminDashboard() {
   const fetchPending = async () => {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
-    const res = await fetch('http://localhost:3000/community/pending', { headers: { 'Authorization': 'Bearer ' + token } });
+    const res = await fetch('API_URL/community/pending', { headers: { 'Authorization': 'Bearer ' + token } });
     if (res.status === 403) { navigate('/'); return; }
     const data = await res.json();
     setPlaces(data);
@@ -20,7 +21,7 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     const token = localStorage.getItem('token');
-    const res = await fetch('http://localhost:3000/admin/stats', { headers: { 'Authorization': 'Bearer ' + token } });
+    const res = await fetch('API_URL/admin/stats', { headers: { 'Authorization': 'Bearer ' + token } });
     if (res.ok) setStats(await res.json());
   };
 
@@ -28,7 +29,7 @@ export default function AdminDashboard() {
 
   const approve = async (id: string) => {
     const token = localStorage.getItem('token');
-    await fetch('http://localhost:3000/community/' + id + '/approve', { method: 'PATCH', headers: { 'Authorization': 'Bearer ' + token } });
+    await fetch('API_URL/community/' + id + '/approve', { method: 'PATCH', headers: { 'Authorization': 'Bearer ' + token } });
     fetchPending();
   };
 

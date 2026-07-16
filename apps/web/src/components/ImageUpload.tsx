@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { API_URL } from '../config';
 
 export default function ImageUpload({ onUpload, multiple = false }: { onUpload: (data: any) => void, multiple?: boolean }) {
   const [loading, setLoading] = useState(false);
@@ -11,7 +12,7 @@ export default function ImageUpload({ onUpload, multiple = false }: { onUpload: 
     files.forEach((file: any) => formData.append('files', file));
 
     try {
-      const res = await fetch('http://localhost:3000/uploads', { method: 'POST', body: formData });
+      const res = await fetch('API_URL/uploads', { method: 'POST', body: formData });
       const data = await res.json();
       
       if (multiple) {

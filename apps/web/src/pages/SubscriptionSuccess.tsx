@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { API_URL } from '../config';
 
 export default function SubscriptionSuccess() {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export default function SubscriptionSuccess() {
   useEffect(() => {
     const verify = async () => {
       try {
-        const res = await fetch('http://localhost:3000/auth/verify-subscription?session_id=' + sessionId);
+        const res = await fetch('API_URL/auth/verify-subscription?session_id=' + sessionId);
         const data = await res.json();
         if (res.ok && data.token) {
           localStorage.setItem('token', data.token);
