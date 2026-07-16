@@ -12,7 +12,7 @@ export default function HiddenGems() {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', description: '', imageUrl: '', lat: 0, lng: 0 });
 
-  const fetchPlaces = () => fetch(API_URL + '/community').then(res => res.json()).then(data => setPlaces(data));
+  const fetchPlaces = () => fetch(API_URL + '/community').then(async res => { const data = await res.json(); if (!res.ok) throw new Error(data.message || 'Error'); return data; }).then(data => setPlaces(data));
 
   useEffect(() => {
     if (!localStorage.getItem('token')) navigate('/login');

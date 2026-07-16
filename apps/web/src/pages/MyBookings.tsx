@@ -12,7 +12,7 @@ export default function MyBookings() {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
     fetch(API_URL + '/bookings/mine', { headers: { 'Authorization': `Bearer ${token}` } })
-      .then(res => res.json()).then(data => setBookings(data));
+      .then(async res => { const data = await res.json(); if (!res.ok) throw new Error(data.message || 'Error'); return data; }).then(data => setBookings(data));
   }, [navigate]);
 
   return (

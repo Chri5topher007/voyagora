@@ -24,7 +24,7 @@ export default function TourDetail() {
 
   useEffect(() => {
     fetch(API_URL + '/tours/' + id)
-      .then(res => res.json())
+      .then(async res => { const data = await res.json(); if (!res.ok) throw new Error(data.message || 'Error'); return data; })
       .then(data => { setTour(data); setLoading(false); })
       .catch(() => { alert('Tour not found'); navigate('/'); });
   }, [id, navigate]);

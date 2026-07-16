@@ -24,7 +24,7 @@ export default function Explore() {
       if (searchQuery) url += 'search=' + encodeURIComponent(searchQuery) + '&';
       if (maxPrice) url += 'maxPrice=' + maxPrice;
     }
-    fetch(url).then(res => res.json()).then(data => {
+    fetch(url).then(async res => { const data = await res.json(); if (!res.ok) throw new Error(data.message || 'Error'); return data; }).then(data => {
       let filtered = data;
       if (type === 'events' && dateFilter) filtered = data.filter((e: any) => new Date(e.eventDate).toISOString().split('T')[0] === dateFilter);
       if (type === 'gems' && searchQuery) filtered = data.filter((g: any) => g.name.toLowerCase().includes(searchQuery.toLowerCase()));

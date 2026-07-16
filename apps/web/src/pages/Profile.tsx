@@ -15,7 +15,7 @@ export default function Profile() {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
     fetch(API_URL + '/users/me', { headers: { 'Authorization': 'Bearer ' + token } })
-      .then(res => res.json()).then(data => {
+      .then(async res => { const data = await res.json(); if (!res.ok) throw new Error(data.message || 'Error'); return data; }).then(data => {
         setUser(data);
         setFormData({ name: data.name || '', bio: data.bio || '', profileImageUrl: data.profileImageUrl || '' });
       });

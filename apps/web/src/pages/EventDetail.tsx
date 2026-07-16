@@ -24,7 +24,7 @@ export default function EventDetail() {
 
   useEffect(() => {
     fetch(API_URL + '/events/' + id)
-      .then(res => res.json())
+      .then(async res => { const data = await res.json(); if (!res.ok) throw new Error(data.message || 'Error'); return data; })
       .then(data => { setEvent(data); setLoading(false); })
       .catch(() => { alert('Event not found'); navigate('/'); });
   }, [id, navigate]);
