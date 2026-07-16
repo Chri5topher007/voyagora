@@ -17,7 +17,7 @@ export default function AIPlanner() {
     if (!token) return navigate('/login');
 
     try {
-      const res = await fetch('API_URL/ai/itinerary', {
+      const res = await fetch(API_URL + '/ai/itinerary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ prompt })

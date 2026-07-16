@@ -18,7 +18,7 @@ export default function Explore() {
 
   useEffect(() => {
     setLoading(true);
-    let url = 'API_URL/' + (type === 'gems' ? 'community' : type);
+    let url = API_URL + '/' + (type === 'gems' ? 'community' : type);
     if (type === 'tours' && (searchQuery || maxPrice)) {
       url += '?';
       if (searchQuery) url += 'search=' + encodeURIComponent(searchQuery) + '&';

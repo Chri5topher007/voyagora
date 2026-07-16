@@ -14,7 +14,7 @@ export default function Profile() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
-    fetch('API_URL/users/me', { headers: { 'Authorization': 'Bearer ' + token } })
+    fetch(API_URL + '/users/me', { headers: { 'Authorization': 'Bearer ' + token } })
       .then(res => res.json()).then(data => {
         setUser(data);
         setFormData({ name: data.name || '', bio: data.bio || '', profileImageUrl: data.profileImageUrl || '' });
@@ -25,7 +25,7 @@ export default function Profile() {
     e.preventDefault();
     setLoading(true);
     const token = localStorage.getItem('token');
-    await fetch('API_URL/users/me', {
+    await fetch(API_URL + '/users/me', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify(formData)

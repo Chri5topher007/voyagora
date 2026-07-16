@@ -42,9 +42,9 @@ function Home() {
   const role = localStorage.getItem('role');
 
   useEffect(() => {
-    fetch('API_URL/tours').then(res => res.json()).then(data => { setAllTours(data); setFilteredTours(data); });
-    fetch('API_URL/events').then(res => res.json()).then(data => setEvents(data));
-    fetch('API_URL/community').then(res => res.json()).then(data => setGems(data));
+    fetch(API_URL + '/tours').then(res => res.json()).then(data => { setAllTours(data); setFilteredTours(data); });
+    fetch(API_URL + '/events').then(res => res.json()).then(data => setEvents(data));
+    fetch(API_URL + '/community').then(res => res.json()).then(data => setGems(data));
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {

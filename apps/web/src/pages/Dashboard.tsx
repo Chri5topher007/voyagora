@@ -22,9 +22,9 @@ export default function Dashboard() {
   const fetchData = async () => {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
-    const tRes = await fetch('API_URL/tours'); setTours(await tRes.json());
-    const eRes = await fetch('API_URL/events'); setEvents(await eRes.json());
-    const sRes = await fetch('API_URL/tours/stats', { headers: { 'Authorization': 'Bearer ' + token } });
+    const tRes = await fetch(API_URL + '/tours'); setTours(await tRes.json());
+    const eRes = await fetch(API_URL + '/events'); setEvents(await eRes.json());
+    const sRes = await fetch(API_URL + '/tours/stats', { headers: { 'Authorization': 'Bearer ' + token } });
     setStats(await sRes.json());
   };
   useEffect(() => { fetchData(); }, []);
@@ -33,7 +33,7 @@ export default function Dashboard() {
     e.preventDefault();
     const token = localStorage.getItem('token');
     const endpoint = type === 'TOUR' ? 'tours' : 'events';
-    await fetch('API_URL/' + endpoint, {
+    await fetch(API_URL + '/' + endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify(formData)

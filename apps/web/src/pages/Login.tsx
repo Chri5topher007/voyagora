@@ -16,7 +16,7 @@ export default function Login() {
     const payload = isLogin ? { email: formData.email, password: formData.password } : { ...formData, role };
 
     try {
-      const res = await fetch('API_URL/auth/' + endpoint, {
+      const res = await fetch(API_URL + '/auth/' + endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

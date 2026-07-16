@@ -12,7 +12,7 @@ export default function ImageUpload({ onUpload, multiple = false }: { onUpload: 
     files.forEach((file: any) => formData.append('files', file));
 
     try {
-      const res = await fetch('API_URL/uploads', { method: 'POST', body: formData });
+      const res = await fetch(API_URL + '/uploads', { method: 'POST', body: formData });
       const data = await res.json();
       
       if (multiple) {

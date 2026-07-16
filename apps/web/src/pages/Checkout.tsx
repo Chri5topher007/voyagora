@@ -50,7 +50,7 @@ export default function Checkout() {
     const token = localStorage.getItem('token');
     if (!token) return navigate('/login');
 
-    const res = await fetch('API_URL/bookings/checkout', {
+    const res = await fetch(API_URL + '/bookings/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ 

@@ -14,7 +14,7 @@ export default function SubscriptionSuccess() {
   useEffect(() => {
     const verify = async () => {
       try {
-        const res = await fetch('API_URL/auth/verify-subscription?session_id=' + sessionId);
+        const res = await fetch(API_URL + '/auth/verify-subscription?session_id=' + sessionId);
         const data = await res.json();
         if (res.ok && data.token) {
           localStorage.setItem('token', data.token);

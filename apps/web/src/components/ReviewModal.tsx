@@ -12,7 +12,7 @@ export default function ReviewModal({ itemId, itemType, itemName, onClose }: { i
     e.preventDefault();
     setLoading(true);
     const token = localStorage.getItem('token');
-    await fetch('API_URL/reviews', {
+    await fetch(API_URL + '/reviews', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ rating, comment, [itemType + 'Id']: itemId })

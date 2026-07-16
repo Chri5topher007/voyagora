@@ -21,7 +21,7 @@ export default function GemDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('API_URL/community/' + id)
+    fetch(API_URL + '/community/' + id)
       .then(res => res.json())
       .then(data => { setGem(data); setLoading(false); })
       .catch(() => { alert('Gem not found'); navigate('/'); });

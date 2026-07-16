@@ -23,7 +23,7 @@ export default function TourDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('API_URL/tours/' + id)
+    fetch(API_URL + '/tours/' + id)
       .then(res => res.json())
       .then(data => { setTour(data); setLoading(false); })
       .catch(() => { alert('Tour not found'); navigate('/'); });

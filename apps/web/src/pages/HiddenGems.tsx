@@ -12,7 +12,7 @@ export default function HiddenGems() {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', description: '', imageUrl: '', lat: 0, lng: 0 });
 
-  const fetchPlaces = () => fetch('API_URL/community').then(res => res.json()).then(data => setPlaces(data));
+  const fetchPlaces = () => fetch(API_URL + '/community').then(res => res.json()).then(data => setPlaces(data));
 
   useEffect(() => {
     if (!localStorage.getItem('token')) navigate('/login');
@@ -22,7 +22,7 @@ export default function HiddenGems() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    await fetch('API_URL/community', {
+    await fetch(API_URL + '/community', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify(formData)

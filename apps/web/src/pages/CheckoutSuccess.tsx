@@ -12,7 +12,7 @@ export default function CheckoutSuccess() {
 
   useEffect(() => {
     const verify = async () => {
-      await fetch('API_URL/bookings/verify?session_id=' + sessionId);
+      await fetch(API_URL + '/bookings/verify?session_id=' + sessionId);
       setLoading(false);
     };
     verify();

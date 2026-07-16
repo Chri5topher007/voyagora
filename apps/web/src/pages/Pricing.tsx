@@ -14,7 +14,7 @@ export default function Pricing() {
     if (!token) return navigate('/login');
 
     try {
-      const res = await fetch('API_URL/auth/create-subscription-checkout', {
+      const res = await fetch(API_URL + '/auth/create-subscription-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
         body: JSON.stringify({ tier })

@@ -23,7 +23,7 @@ export default function EventDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('API_URL/events/' + id)
+    fetch(API_URL + '/events/' + id)
       .then(res => res.json())
       .then(data => { setEvent(data); setLoading(false); })
       .catch(() => { alert('Event not found'); navigate('/'); });
