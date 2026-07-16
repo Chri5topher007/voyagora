@@ -274,11 +274,7 @@ function Home() {
           </div>
           <div>
             <h4 className="text-white font-bold mb-4 text-sm uppercase tracking-wider">Company</h4>
-            <ul className="space-y-2 text-sm">
-              <li onClick={() => alert('About Us page coming soon!')} className="hover:text-white cursor-pointer">About Us</li>
-              <li onClick={() => alert('Careers page coming soon!')} className="hover:text-white cursor-pointer">Careers</li>
-              <li onClick={() => alert('Contact page coming soon!')} className="hover:text-white cursor-pointer">Contact</li>
-            </ul>
+            <p className="text-sm text-slate-400">Contact: 8078260288</p>
           </div>
           <div>
             <h4 className="text-white font-bold mb-4 text-sm uppercase tracking-wider">Newsletter</h4>
