@@ -138,21 +138,21 @@ function Home() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div onClick={() => navigate('/explore/tours')} className="relative h-64 rounded-2xl overflow-hidden group cursor-pointer shadow-lg">
-            <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Tours" />
+            <img loading="lazy" src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Tours" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
               <h3 className="text-2xl font-serif font-bold text-white">Travel Packages</h3>
               <p className="text-slate-200 text-sm">Curated trips and adventures</p>
             </div>
           </div>
           <div onClick={() => navigate('/explore/events')} className="relative h-64 rounded-2xl overflow-hidden group cursor-pointer shadow-lg">
-            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Events" />
+            <img loading="lazy" src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Events" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
               <h3 className="text-2xl font-serif font-bold text-white">Upcoming Events</h3>
               <p className="text-slate-200 text-sm">Concerts, festivals, and meetups</p>
             </div>
           </div>
           <div onClick={() => navigate('/explore/gems')} className="relative h-64 rounded-2xl overflow-hidden group cursor-pointer shadow-lg">
-            <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=800&q=80" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Gems" />
+            <img loading="lazy" src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=800&q=80" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Gems" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
               <h3 className="text-2xl font-serif font-bold text-white">Hidden Gems</h3>
               <p className="text-slate-200 text-sm">Unbelievable spots by travelers</p>
@@ -175,7 +175,7 @@ function Home() {
             filteredTours.map((tour: any, i) => (
               <motion.div key={tour.id} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5 }} className="bg-white rounded-2xl overflow-hidden border border-slate-100 group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-2 flex flex-col">
                 <div className="h-64 overflow-hidden relative">
-                  <img src={tour.imageUrl} alt={tour.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <img loading="lazy" src={tour.imageUrl} alt={tour.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg"><span className="text-lg font-bold text-slate-900 font-sans">₹{tour.price}</span></div>
                   <WishlistButton itemId={tour.id} itemType="tour" />
                 </div>
@@ -217,7 +217,7 @@ function Home() {
           {events.map((event: any, i) => (
             <motion.div key={event.id} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5 }} className="bg-white rounded-2xl overflow-hidden border border-slate-100 group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-2 flex flex-col">
               <div className="h-64 overflow-hidden relative">
-                <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <img loading="lazy" src={event.imageUrl} alt={event.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg"><span className="text-lg font-bold text-slate-900 font-sans">₹{event.price}</span></div>
                 <WishlistButton itemId={event.id} itemType="event" />
               </div>
@@ -245,7 +245,7 @@ function Home() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {gems.map((gem: any, i) => (
             <motion.div key={gem.id} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl transition-all cursor-pointer hover:-translate-y-1" onClick={() => navigate('/gems/' + gem.id)}>
-              <img src={gem.imageUrl} alt={gem.name} className="w-full h-40 object-cover" />
+              <img loading="lazy" src={gem.imageUrl} alt={gem.name} className="w-full h-40 object-cover" />
               <div className="p-4">
                 <h4 className="font-serif font-bold text-lg text-slate-900">{gem.name}</h4>
                 <p className="text-slate-500 text-sm line-clamp-2 font-sans">{gem.description}</p>

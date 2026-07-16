@@ -1,4 +1,14 @@
+const fs = require('fs');
 
+function createFile(filePath, content) {
+  const dir = require('path').dirname(filePath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(filePath, content, 'utf8');
+  console.log('✅ Updated ' + filePath);
+}
+
+// 1. UPDATE INDEX.HTML (SEO Meta Tags & Mobile Web App)
+createFile('apps/web/index.html', `
 <!doctype html>
 <html lang="en">
   <head>
@@ -42,3 +52,34 @@
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
+`);
+
+// 2. UPDATE TAILWIND CONFIG (Add Premium Serif Font)
+createFile('apps/web/tailwind.config.js', `
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+      },
+    },
+  },
+  plugins: [],
+}
+`);
+
+// 3. ADD LAZY LOADING TO HOME PAGE IMAGES
+let appContent = fs.readFileSync('apps/web/src/App.tsx', 'utf8');
+appContent = appContent.split('<img src={tour.imageUrl}').join('<img loading="lazy" src={tour.imageUrl}');
+appContent = appContent.split('<img src={event.imageUrl}').join('<img loading="lazy" src={event.imageUrl}');
+appContent = appContent.split('<img src={gem.imageUrl}').join('<img loading="lazy" src={gem.imageUrl}');
+appContent = appContent.split('<img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828').join('<img loading="lazy" src="https://images.unsplash.com/photo-1488646953014-85cb44e25828');
+appContent = appContent.split('<img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30').join('<img loading="lazy" src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30');
+appContent = appContent.split('<img src="https://images.unsplash.com/photo-1519046904884-53103b34b206').join('<img loading="lazy" src="https://images.unsplash.com/photo-1519046904884-53103b34b206');
+fs.writeFileSync('apps/web/src/App.tsx', appContent);
+console.log('✅ Added lazy loading to Home Page images.');
+
+console.log('\n✨ SEO & Social Sharing Update Complete!');
