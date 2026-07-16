@@ -1,9 +1,8 @@
 
-// Vite automatically sets import.meta.env.PROD to true when building for Vercel.
-// This completely bypasses the need for Vercel Environment Variables.
-const isProd = import.meta.env.PROD;
+// This completely bypasses Vercel Environment Variables.
+// If you are on localhost, it uses localhost. If you are on Vercel, it uses Render.
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-// In production (Vercel), use the live Render URL. Locally, use localhost.
-export const API_URL = isProd 
-  ? 'https://voyagora.onrender.com' 
-  : 'http://localhost:3000';
+export const API_URL = isLocal 
+  ? 'http://localhost:3000' 
+  : 'https://voyagora.onrender.com';
