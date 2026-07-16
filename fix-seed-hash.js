@@ -1,4 +1,14 @@
+const fs = require('fs');
 
+function createFile(filePath, content) {
+  const dir = require('path').dirname(filePath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(filePath, content, 'utf8');
+  console.log('✅ Updated ' + filePath);
+}
+
+// UPDATE SEED.JS TO DYNAMICALLY HASH THE REAL PASSWORD
+createFile('apps/api/seed.js', `
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
@@ -54,3 +64,6 @@ async function main() {
 }
 
 main().catch((e) => { console.error(e); process.exit(1); }).finally(async () => { await prisma.$disconnect(); });
+`);
+
+console.log('\n✨ Seed Script Hash Fix Applied!');
