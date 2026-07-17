@@ -1,0 +1,207 @@
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+generator client {
+  provider = "prisma-client-js"
+}
+model User {
+  id                 String   @id @default(uuid())
+  email              String   @unique
+  password           String
+  name               String
+  role               String   @default("TRAVELER")
+  subscriptionStatus String   @default("INACTIVE")
+  profileImageUrl    String?
+  bio                String?
+  tours              Tour[]
+  events             Event[]
+  bookings           Booking[]
+  places             CommunityPlace[]
+  reviews            Review[]
+  wishlist           Wishlist[]
+  notifications      Notification[]
+  following          Follow[] @relation("Follower")
+  followers          Follow[] @relation("Following")
+  refreshTokens      RefreshToken[]
+  passwordResets     PasswordResetToken[]
+  createdAt          DateTime @default(now())
+
+  @@index([role])
+}
+model Tour {
+  id              String   @id @default(uuid())
+  title           String
+  description     String
+  price           Float
+  imageUrl        String
+  gallery         String[] @default([])
+  lat             Float    @default(0)
+  lng             Float    @default(0)
+  organizerId     String
+  organizer       User     @relation(fields: [organizerId], references: [id])
+  bookings        Booking[]
+  reviews         Review[]
+  wishlist        Wishlist[]
+  paymentType     String   @default("FULL")
+  advanceAmount   Float    @default(0)
+  gstNumber       String?
+  gstPercentage   Float    @default(0)
+  createdAt       DateTime @default(now())
+
+  @@index([organizerId])
+  @@index([createdAt])
+}
+model Event {
+  id              String   @id @default(uuid())
+  title           String
+  description     String
+  price           Float
+  imageUrl        String
+  gallery         String[] @default([])
+  lat             Float    @default(0)
+  lng             Float    @default(0)
+  eventDate       DateTime
+  organizerId     String
+  organizer       User     @relation(fields: [organizerId], references: [id])
+  bookings        Booking[]
+  reviews         Review[]
+  wishlist        Wishlist[]
+  paymentType     String   @default("FULL")
+  advanceAmount   Float    @default(0)
+  gstNumber       String?
+  gstPercentage   Float    @default(0)
+  createdAt       DateTime @default(now())
+
+  @@index([organizerId])
+  @@index([eventDate])
+}
+model Booking {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  tourId          String?
+  tour            Tour?    @relation(fields: [tourId], references: [id])
+  eventId         String?
+  event           Event?   @relation(fields: [eventId], references: [id])
+  totalAmount     Float
+  amountPaid      Float
+  pendingAmount   Float
+  platformFee     Float
+  organizerPayout Float
+  gstAmount       Float
+  discountApplied Float    @default(0)
+  status          String   @default("CONFIRMED")
+  qrCode          String   @unique
+  isCheckedIn     Boolean  @default(false)
+  travelDate      DateTime?
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([tourId])
+  @@index([eventId])
+  @@index([createdAt])
+}
+model CommunityPlace {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  imageUrl    String
+  lat         Float    @default(0)
+  lng         Float    @default(0)
+  status      String   @default("PENDING")
+  uploadedBy  String
+  user        User     @relation(fields: [uploadedBy], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@index([status])
+  @@index([uploadedBy])
+}
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  tourId    String?
+  tour      Tour?    @relation(fields: [tourId], references: [id])
+  eventId   String?
+  event     Event?   @relation(fields: [eventId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@index([tourId])
+  @@index([eventId])
+  @@index([userId])
+}
+model Wishlist {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  tourId    String?
+  tour      Tour?    @relation(fields: [tourId], references: [id])
+  eventId   String?
+  event     Event?   @relation(fields: [eventId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+}
+model Coupon {
+  id             String   @id @default(uuid())
+  code           String   @unique
+  discountAmount Float
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+}
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String
+  follower    User     @relation("Follower", fields: [followerId], references: [id])
+  followingId String
+  following   User     @relation("Following", fields: [followingId], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
+  @@index([followingId])
+}
+
+// --- Auth hardening: short-lived access tokens + revocable refresh tokens ---
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// --- Payment reliability: makes Stripe webhook processing idempotent ---
+model ProcessedStripeEvent {
+  id          String   @id
+  processedAt DateTime @default(now())
+}
